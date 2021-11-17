@@ -11,6 +11,6 @@ h1 {
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 #board {
-  height: 89vh;
+  height: calc(100vh - 50px);
   background-color: cornflowerblue;
 }
