@@ -10,7 +10,28 @@ h1 {
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
+.card{
+  height: 110px;
+  width: 70px;
+  background-color: burlywood;
+  border: solid black 3px;
+  border-radius: 20%;
+  margin: 10px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: xx-large;
+  
+}
+.card:hover{
+  background-color: coral;
+  color: rgb(17, 105, 105);
+  border-color: rgb(17, 105, 105);
+}
 #board {
   height: calc(100vh - 50px);
   background-color: cornflowerblue;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 
 }

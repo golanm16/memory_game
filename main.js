@@ -1,11 +1,15 @@
+let cards = [];
+let chosen_cards = [];
+const card_image = 'https://opengameart.org/sites/default/files/card%20back%20red_0.png';
+
 function delete_letter(str, i) {
   return str.slice(0, i) + str.slice(i + 1, str.length);
 }
 
 function refill_cards() {
-  cards = [];
+  // cards = [];
   alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase();
-  for (i = 0; i < 15; i++) {
+  for (i = 0; i < 4; i++) {
     letter_index = get_rand(0, alphabet.length);
     cards.push({ name: alphabet[letter_index] });
     cards.push({ name: alphabet[letter_index] });
@@ -39,11 +43,41 @@ function remove_cards(cards, i, j) {
   cards.splice(j, 1);
 }
 
-function create_card_element(document, card) {
+function create_card_element(document, card, index) {
   const board = document.getElementById("board");
+  // >> the same as document.querySelector('board')
   const card_element = document.createElement("div");
-  card_element.innerHTML = card.name;
+  card_element.id = index;
+  // card_element.value = card.name;
+  card_element.className = 'card';
+  card_element.onclick = revealCard;
+  const card_background = document.createElement('img');
+  card_background.src = card_image;
+
+  // card_element.appendChild(card_background)
+  //https://opengameart.org/sites/default/files/card%20back%20red_0.png
+  // >> the same as card_element.addEventListener('click', revealCard)
   board.appendChild(card_element);
+}
+
+function revealCard(evn) {
+  const idx = evn.target.id
+  console.log(idx, cards[idx].name);
+  if (chosen_cards.includes(evn.target)) {
+    return;
+  }
+  console.log(chosen_cards);
+  evn.target.innerHTML = cards[idx].name;
+  chosen_cards.push(evn.target)
+  if (chosen_cards.length == 2) {
+    if (chosen_cards[0].innerHTML == chosen_cards[1].innerHTML) {
+      console.log('success!');
+      chosen_cards.forEach(v => v.remove());
+    } else {
+      chosen_cards.forEach(v => v.innerHTML = '');
+    }
+    chosen_cards = [];
+  }
 }
 
 function main() {
@@ -56,9 +90,10 @@ function main() {
   // card_element.innerHTML = cards[0];
   // console.log(board);
   // board.appendChild(card_element);
-  for (card of cards) {
-    create_card_element(document, card);
+  for (i in cards) {
+    create_card_element(document, cards[i], i);
   }
 }
-
-main();
+window.onload = () => {
+  main();
+}
