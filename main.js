@@ -66,7 +66,7 @@ function revealCard(evn) {
   if (chosen_cards.includes(evn.target)) {
     return;
   }
-  console.log(chosen_cards);
+  // console.log(chosen_cards);
   evn.target.innerHTML = cards[idx].name;
   chosen_cards.push(evn.target)
   if (chosen_cards.length == 2) {
@@ -75,6 +75,7 @@ function revealCard(evn) {
       chosen_cards.forEach(v => v.remove());
     } else {
       chosen_cards.forEach(v => v.innerHTML = '');
+      // setTimeout(()=> chosen_cards.forEach(v => v.innerHTML = ''), 3000);
     }
     chosen_cards = [];
   }
