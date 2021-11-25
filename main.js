@@ -1,6 +1,7 @@
 let cards = [];
 let chosen_cards = [];
 const card_image = 'https://opengameart.org/sites/default/files/card%20back%20red_0.png';
+let freeze_cards = false;
 
 function delete_letter(str, i) {
   return str.slice(0, i) + str.slice(i + 1, str.length);
@@ -60,7 +61,23 @@ function create_card_element(document, card, index) {
   board.appendChild(card_element);
 }
 
+function remove_or_hide() {
+  if (chosen_cards[0].innerHTML == chosen_cards[1].innerHTML) {
+    console.log('success!');
+    chosen_cards.forEach(v => v.remove());
+  } else {
+    chosen_cards.forEach(v => v.innerHTML = '');
+    // setTimeout(()=> chosen_cards.forEach(v => v.innerHTML = ''), 3000);
+  }
+  chosen_cards = [];
+  freeze_cards = false;
+}
+
 function revealCard(evn) {
+  if(freeze_cards){
+    return;
+  }
+  freeze_cards = true;
   const idx = evn.target.id
   console.log(idx, cards[idx].name);
   if (chosen_cards.includes(evn.target)) {
@@ -70,14 +87,9 @@ function revealCard(evn) {
   evn.target.innerHTML = cards[idx].name;
   chosen_cards.push(evn.target)
   if (chosen_cards.length == 2) {
-    if (chosen_cards[0].innerHTML == chosen_cards[1].innerHTML) {
-      console.log('success!');
-      chosen_cards.forEach(v => v.remove());
-    } else {
-      chosen_cards.forEach(v => v.innerHTML = '');
-      // setTimeout(()=> chosen_cards.forEach(v => v.innerHTML = ''), 3000);
-    }
-    chosen_cards = [];
+    setTimeout(() => { remove_or_hide() }, 1000);
+  }else{
+    freeze_cards = false;
   }
 }
 
