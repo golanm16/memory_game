@@ -10,12 +10,40 @@ h1 {
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
+#players{
+  background-color: grey;
+  width: 120px;
+  /* disables text selection */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-touch-callout: none;
+  -ms-user-select: none;
+  user-select: none;
+  float: left;
+}
+#addPlyrBtn {
+  background-color: grey;
+  width: 120px;
+  /* disables text selection */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-touch-callout: none;
+  -ms-user-select: none;
+  user-select: none;
+  float: left;
+}
+#addPlyrBtn:hover {
+  background-color: honeydew;
+  
+}
 .card {
   height: 200px;
   width: 100px;
   background-color: burlywood;
   border: solid black 3px;
-  border-radius: 20%;
+  border-radius: 15px;
   margin: 20px;
   margin-top: 40px;
   margin-bottom: 40px;
@@ -24,15 +52,23 @@ h1 {
   display: flex;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: xx-large;
+  /* disables text selection */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-touch-callout: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .card:hover {
   background-color: coral;
   color: rgb(17, 105, 105);
   border-color: rgb(17, 105, 105);
+  cursor: pointer;
 }
 #board {
   height: calc(100vh - 50px);
-  background-color: cornflowerblue;
+  background-color: grey;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }

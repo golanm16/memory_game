@@ -2,6 +2,17 @@ let cards = [];
 let chosen_cards = [];
 const card_image = 'https://opengameart.org/sites/default/files/card%20back%20red_0.png';
 let freeze_cards = false;
+let players = []
+let currPlayer = 0;
+
+
+class Player {
+  constructor(playerName) {
+    this.playerName = playerName;
+    this.score = 0;
+  }
+}
+
 
 function delete_letter(str, i) {
   return str.slice(0, i) + str.slice(i + 1, str.length);
@@ -54,58 +65,109 @@ function create_card_element(document, card, index) {
   card_element.onclick = revealCard;
   const card_background = document.createElement('img');
   card_background.src = card_image;
-
   // card_element.appendChild(card_background)
-  //https://opengameart.org/sites/default/files/card%20back%20red_0.png
-  // >> the same as card_element.addEventListener('click', revealCard)
   board.appendChild(card_element);
 }
 
 function remove_or_hide() {
   if (chosen_cards[0].innerHTML == chosen_cards[1].innerHTML) {
     console.log('success!');
-    chosen_cards.forEach(v => v.remove());
+    chosen_cards.forEach(v => v.onclick = '');
   } else {
     chosen_cards.forEach(v => v.innerHTML = '');
+    chooseNextPlayer(currPlayer)
     // setTimeout(()=> chosen_cards.forEach(v => v.innerHTML = ''), 3000);
   }
+  // choose next player
   chosen_cards = [];
   freeze_cards = false;
 }
 
 function revealCard(evn) {
-  if(freeze_cards){
+  if (freeze_cards) {
+    return;
+  }
+  const idx = evn.target.id
+  if (chosen_cards.length == 1 && chosen_cards[0].id == idx) {
     return;
   }
   freeze_cards = true;
-  const idx = evn.target.id
-  console.log(idx, cards[idx].name);
-  if (chosen_cards.includes(evn.target)) {
-    return;
-  }
   // console.log(chosen_cards);
   evn.target.innerHTML = cards[idx].name;
-  chosen_cards.push(evn.target)
+  chosen_cards.push(evn.target);
   if (chosen_cards.length == 2) {
     setTimeout(() => { remove_or_hide() }, 1000);
-  }else{
+  } else {
     freeze_cards = false;
   }
 }
 
-function main() {
+function addPlayer(playerName) {
+  players.push(new Player(playerName))
+  playerLi = document.createElement('li');
+  playerLi.innerText = playerName;
+  document.getElementById('playerList').append(playerLi);
+}
+
+function submitPlayer(ev) {
+  let playerName = document.getElementById('inputPlayerField').value;
+  addPlayer(playerName);
+  console.log(playerName);
+  this.remove();
+  console.log(document.getElementById('inputPlayerField'));
+  document.getElementById('inputPlayerField').remove();
+  document.getElementById('addPlyrBtn').onclick = evAddPlayer;
+  ev.stopPropagation();
+}
+
+function chooseNextPlayer(playerIndex){
+  const playerElem = document.getElementById('playerList').children[playerIndex];
+  playerElem.innerText = players[currPlayer].playerName;
+  currPlayer = currPlayer == players.length - 1 ? 0 : currPlayer + 1;
+  choosePlayer(currPlayer)
+}
+
+function choosePlayer(playerIndex) {
+  const playerElem = document.getElementById('playerList').children[playerIndex];
+  playerElem.innerText = '-> ' + playerElem.innerText;
+}
+
+function evAddPlayer() {
+  const inputField = document.createElement('input');
+  document.getElementById('addPlyrBtn').onclick = 'evAddPlayer';
+
+  inputField.type = 'text';
+  inputField.id = 'inputPlayerField';
+  inputField.placeholder = 'player name';
+  const inputBtn = document.createElement('button');
+  inputBtn.innerText = 'enter player'
+  inputBtn.id = 'inputPlayerBtn'
+  inputBtn.onclick = submitPlayer;
+  console.log('generating');
+  this.appendChild(inputField);
+  this.appendChild(inputBtn);
+}
+
+function initGame() {
+  choosePlayer(0);
+  document.getElementById('addPlyrBtn').remove()
+  document.getElementById('board').innerText = '';
+  document.getElementById('board').onclick = '';
   cards = refill_cards();
   console.log(JSON.stringify(cards));
   shuffle_cards(cards);
   console.log(cards);
-  // const board = document.getElementById("board");
-  // const card_element = document.createElement("div");
-  // card_element.innerHTML = cards[0];
-  // console.log(board);
-  // board.appendChild(card_element);
   for (i in cards) {
     create_card_element(document, cards[i], i);
   }
+}
+
+function main() {
+  const addPlayerButton = document.getElementById('addPlyrBtn');
+  addPlayerButton.onclick = evAddPlayer;
+  const board = document.getElementById("board");
+  board.innerText = 'click me to start game';
+  board.onclick = initGame;
 }
 window.onload = () => {
   main();
