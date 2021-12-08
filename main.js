@@ -4,6 +4,8 @@ const card_image = 'https://opengameart.org/sites/default/files/card%20back%20re
 let freeze_cards = false;
 let players = []
 let currPlayer = 0;
+const cardBack = 'https://i.pinimg.com/originals/4d/40/95/4d4095cc1994dfda327e2856d0a8c203.jpg';
+
 
 
 class Player {
@@ -69,10 +71,17 @@ function create_card_element(document, card, index) {
   board.appendChild(card_element);
 }
 
+function raiseScore(playerIndex){
+  const playerElem = document.getElementById('playerList').children[playerIndex];
+  players[playerIndex].score++;
+  playerElem.children[1].innerText = players[playerIndex].score;
+}
+
 function remove_or_hide() {
   if (chosen_cards[0].innerHTML == chosen_cards[1].innerHTML) {
     console.log('success!');
     chosen_cards.forEach(v => v.onclick = '');
+    raiseScore(currPlayer);
   } else {
     chosen_cards.forEach(v => v.innerHTML = '');
     chooseNextPlayer(currPlayer)
@@ -103,9 +112,15 @@ function revealCard(evn) {
 }
 
 function addPlayer(playerName) {
-  players.push(new Player(playerName))
+  player = new Player(playerName)
+  players.push(player)
   playerLi = document.createElement('li');
-  playerLi.innerText = playerName;
+  const playerNameDiv = document.createElement('div');
+  const playerScoreDiv = document.createElement('div');
+  playerNameDiv.innerText = playerName;
+  playerScoreDiv.innerText = player.score;
+  playerLi.appendChild(playerNameDiv);
+  playerLi.appendChild(playerScoreDiv);
   document.getElementById('playerList').append(playerLi);
 }
 
@@ -122,14 +137,14 @@ function submitPlayer(ev) {
 
 function chooseNextPlayer(playerIndex){
   const playerElem = document.getElementById('playerList').children[playerIndex];
-  playerElem.innerText = players[currPlayer].playerName;
+  playerElem.setAttribute('style', '');
   currPlayer = currPlayer == players.length - 1 ? 0 : currPlayer + 1;
   choosePlayer(currPlayer)
 }
 
 function choosePlayer(playerIndex) {
   const playerElem = document.getElementById('playerList').children[playerIndex];
-  playerElem.innerText = '-> ' + playerElem.innerText;
+  playerElem.setAttribute('style', 'border-color: white; background-color: lightgrey');
 }
 
 function evAddPlayer() {

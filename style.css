@@ -11,8 +11,11 @@ h1 {
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 #players{
+  margin: 0; /* Remove margins */
+  float: left;
+  align-items: center;
+  border: double black 3px;
   background-color: grey;
-  width: 120px;
   /* disables text selection */
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -21,6 +24,20 @@ h1 {
   -ms-user-select: none;
   user-select: none;
   float: left;
+}
+#playerList{
+  
+  min-width: 80px;
+  list-style-type: none; /* Remove bullets */
+  padding: 20px; /* Remove padding */
+  margin: 0; /* Remove margins */
+  padding-top: 0;
+}
+#playerList li{
+  border: black solid 3px;
+  border-radius: 3px;
+  display: flex;
+  justify-content: space-between;
 }
 #addPlyrBtn {
   background-color: grey;
@@ -39,14 +56,12 @@ h1 {
   
 }
 .card {
-  height: 200px;
+  height: 150px;
   width: 100px;
   background-color: burlywood;
   border: solid black 3px;
   border-radius: 15px;
   margin: 20px;
-  margin-top: 40px;
-  margin-bottom: 40px;
   align-items: center;
   justify-content: center;
   display: flex;
@@ -59,6 +74,11 @@ h1 {
   -webkit-touch-callout: none;
   -ms-user-select: none;
   user-select: none;
+}
+.card *{
+  border-radius: 5px;
+  height: auto;
+  width: 100px;
 }
 .card:hover {
   background-color: coral;
