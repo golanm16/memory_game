@@ -1,10 +1,11 @@
 let cards = [];
 let chosen_cards = [];
-const card_image = 'https://opengameart.org/sites/default/files/card%20back%20red_0.png';
 let freeze_cards = false;
 let players = []
 let currPlayer = 0;
-const cardBack = 'https://i.pinimg.com/originals/4d/40/95/4d4095cc1994dfda327e2856d0a8c203.jpg';
+const cardsVault = [
+  "2", "3", "4", "5", "6", "7", "8", "9", "J", "Q", "K", "A"
+]
 
 
 
@@ -16,18 +17,17 @@ class Player {
 }
 
 
-function delete_letter(str, i) {
-  return str.slice(0, i) + str.slice(i + 1, str.length);
+function deleteEntry(arr, i) {
+  return arr.slice(0, i).concat(arr.slice(i + 1, arr.length));
 }
 
-function refill_cards() {
-  // cards = [];
-  alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase();
-  for (i = 0; i < 4; i++) {
-    letter_index = get_rand(0, alphabet.length);
-    cards.push({ name: alphabet[letter_index] });
-    cards.push({ name: alphabet[letter_index] });
-    alphabet = delete_letter(alphabet, letter_index);
+function refill_cards(cardsToEnter = cardsVault.length) {
+  let tempCardsVault = [...cardsVault];
+  for (i = 0; i < cardsToEnter; i++) {
+    letter_index = get_rand(0, tempCardsVault.length);
+    cards.push({ name: tempCardsVault[letter_index] });
+    cards.push({ name: tempCardsVault[letter_index] });
+    tempCardsVault = deleteEntry(tempCardsVault, letter_index);
   }
   return cards;
 }
@@ -48,7 +48,7 @@ function shuffle_cards(arr) {
   return arr;
 }
 
-function are_equal(arr, i, j) {
+function areEqual(i, j, arr = cards) {
   return i != j && arr[i].name === arr[j].name;
 }
 
@@ -57,33 +57,51 @@ function remove_cards(cards, i, j) {
   cards.splice(j, 1);
 }
 
-function create_card_element(document, card, index) {
+function createCardBackElement() {
+  const cardImage = './assets/cardBackRed.png';
+
+  cardBackElement = document.createElement('img');
+  cardBackElement.src = cardImage;
+  return cardBackElement;
+}
+
+function createCardFaceElement(cardIndex) {
+  const cardFaceElement = document.createElement('div');
+  cardFaceElement.dataset.value = cards[cardIndex].name;
+  cardFaceElement.className = 'cardFace';
+  return cardFaceElement;
+}
+
+function create_card_element(document, cardIndex) {
   const board = document.getElementById("board");
-  // >> the same as document.querySelector('board')
+
   const card_element = document.createElement("div");
-  card_element.id = index;
-  // card_element.value = card.name;
+  card_element.id = cardIndex;
   card_element.className = 'card';
   card_element.onclick = revealCard;
-  const card_background = document.createElement('img');
-  card_background.src = card_image;
-  // card_element.appendChild(card_background)
+  card_element.appendChild(createCardBackElement());
+  const cardFace = createCardFaceElement(cardIndex);
+  cardFace.hidden = true;
+  card_element.appendChild(cardFace);
+
   board.appendChild(card_element);
 }
 
-function raiseScore(playerIndex){
+function raiseScore(playerIndex) {
   const playerElem = document.getElementById('playerList').children[playerIndex];
   players[playerIndex].score++;
   playerElem.children[1].innerText = players[playerIndex].score;
 }
 
 function remove_or_hide() {
-  if (chosen_cards[0].innerHTML == chosen_cards[1].innerHTML) {
-    console.log('success!');
+  if (areEqual(chosen_cards[0].id, chosen_cards[1].id)) {
     chosen_cards.forEach(v => v.onclick = '');
     raiseScore(currPlayer);
   } else {
-    chosen_cards.forEach(v => v.innerHTML = '');
+    chosen_cards.forEach(v => {
+      v.children[1].hidden = true;
+      v.children[0].hidden = false;
+    });
     chooseNextPlayer(currPlayer)
     // setTimeout(()=> chosen_cards.forEach(v => v.innerHTML = ''), 3000);
   }
@@ -93,17 +111,27 @@ function remove_or_hide() {
 }
 
 function revealCard(evn) {
+  // activate only for card class
+  if (this.className === 'card') {
+    evn.stopPropagation();
+  }
+  else {
+    return;
+  }
+  // check if two cards a re already revealed
   if (freeze_cards) {
     return;
   }
-  const idx = evn.target.id
+  const idx = this.id
+  // check if pressed twice on the same card
   if (chosen_cards.length == 1 && chosen_cards[0].id == idx) {
     return;
   }
+  
   freeze_cards = true;
-  // console.log(chosen_cards);
-  evn.target.innerHTML = cards[idx].name;
-  chosen_cards.push(evn.target);
+  this.children[0].hidden = true;
+  this.children[1].hidden = false;
+  chosen_cards.push(this);
   if (chosen_cards.length == 2) {
     setTimeout(() => { remove_or_hide() }, 1000);
   } else {
@@ -127,15 +155,13 @@ function addPlayer(playerName) {
 function submitPlayer(ev) {
   let playerName = document.getElementById('inputPlayerField').value;
   addPlayer(playerName);
-  console.log(playerName);
   this.remove();
-  console.log(document.getElementById('inputPlayerField'));
   document.getElementById('inputPlayerField').remove();
   document.getElementById('addPlyrBtn').onclick = evAddPlayer;
   ev.stopPropagation();
 }
 
-function chooseNextPlayer(playerIndex){
+function chooseNextPlayer(playerIndex) {
   const playerElem = document.getElementById('playerList').children[playerIndex];
   playerElem.setAttribute('style', '');
   currPlayer = currPlayer == players.length - 1 ? 0 : currPlayer + 1;
@@ -158,22 +184,25 @@ function evAddPlayer() {
   inputBtn.innerText = 'enter player'
   inputBtn.id = 'inputPlayerBtn'
   inputBtn.onclick = submitPlayer;
-  console.log('generating');
   this.appendChild(inputField);
   this.appendChild(inputBtn);
 }
 
-function initGame() {
+function initGame(ev) {
+  if(players.length < 1){
+    this.innerHTML = 'click me to start.<br> please add a player.';
+    console.log('must add atleast 1 player to play');
+    return;
+  }
   choosePlayer(0);
   document.getElementById('addPlyrBtn').remove()
-  document.getElementById('board').innerText = '';
-  document.getElementById('board').onclick = '';
+  const board = document.getElementById('board').innerText = '';
+  board.onclick = '';
+  board.className = 'board';
   cards = refill_cards();
-  console.log(JSON.stringify(cards));
   shuffle_cards(cards);
-  console.log(cards);
   for (i in cards) {
-    create_card_element(document, cards[i], i);
+    create_card_element(document, i);
   }
 }
 
@@ -181,7 +210,7 @@ function main() {
   const addPlayerButton = document.getElementById('addPlyrBtn');
   addPlayerButton.onclick = evAddPlayer;
   const board = document.getElementById("board");
-  board.innerText = 'click me to start game';
+  board.innerHTML = 'click me to start.<br> must have at least one player added.';
   board.onclick = initGame;
 }
 window.onload = () => {
