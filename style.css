@@ -101,10 +101,10 @@ img {
   transform: scale(1.02);
 }
 .board {
-  max-width: 90%;
+  max-width: 85%;
   height: auto;
   background-color: grey;
-  /* columns: 110px 8; */
+  columns: 110px 6;
   /* disables text selection */
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -131,6 +131,7 @@ img {
   transform: rotate(180deg);
 }
 .init {
+  display: inline;
   padding: 20px;
   font-size: larger;
   align-items: center;

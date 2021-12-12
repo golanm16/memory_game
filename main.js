@@ -196,7 +196,8 @@ function initGame(ev) {
   }
   choosePlayer(0);
   document.getElementById('addPlyrBtn').remove()
-  const board = document.getElementById('board').innerText = '';
+  const board = document.getElementById('board');
+  board.innerText = '';
   board.onclick = '';
   board.className = 'board';
   cards = refill_cards();
