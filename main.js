@@ -7,8 +7,6 @@ const cardsVault = [
   "2", "3", "4", "5", "6", "7", "8", "9", "J", "Q", "K", "A"
 ]
 
-
-
 class Player {
   constructor(playerName) {
     this.playerName = playerName;
@@ -127,7 +125,7 @@ function revealCard(evn) {
   if (chosen_cards.length == 1 && chosen_cards[0].id == idx) {
     return;
   }
-  
+
   freeze_cards = true;
   this.children[0].hidden = true;
   this.children[1].hidden = false;
@@ -189,7 +187,7 @@ function evAddPlayer() {
 }
 
 function initGame(ev) {
-  if(players.length < 1){
+  if (players.length < 1) {
     this.innerHTML = 'click me to start.<br> please add a player.';
     console.log('must add atleast 1 player to play');
     return;
